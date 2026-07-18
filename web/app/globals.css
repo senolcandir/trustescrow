@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #10131a;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% -10%, rgba(184, 134, 59, 0.10), transparent),
+    radial-gradient(circle at 1px 1px, rgba(231, 233, 226, 0.035) 1px, transparent 0);
+  background-size: auto, 3px 3px;
+  color: #e7e9e2;
+}
+
+::selection {
+  background: rgba(184, 134, 59, 0.35);
+  color: #10131a;
+}
+
+:focus-visible {
+  outline: 2px solid #d3a24f;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Kagit dokusu: escrow karti icin ince liflenme hissi */
+.paper-texture {
+  background-image: radial-gradient(circle at 1px 1px, rgba(16, 19, 26, 0.05) 1px, transparent 0);
+  background-size: 4px 4px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
