@@ -14,6 +14,7 @@ export const wagmiConfig = createConfig({
   transports: {
     [arcTestnet.id]: fallback([
       http("https://rpc.testnet.arc.network", rpcOptions),
+      http("https://arc-testnet.drpc.org", rpcOptions),
       http("https://rpc.drpc.testnet.arc.network", rpcOptions),
       http("https://rpc.quicknode.testnet.arc.network", rpcOptions),
       http("https://rpc.blockdaemon.testnet.arc.network", rpcOptions),

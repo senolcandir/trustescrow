@@ -3,14 +3,14 @@ import { SealTimeline } from "@/components/SealTimeline";
 
 export default function HomePage() {
   return (
-    <div className="space-y-20">
+    <div className="space-y-14 sm:space-y-20">
       {/* Hero */}
       <section className="grid gap-10 md:grid-cols-[1.3fr_1fr] md:items-center">
         <div>
           <p className="mb-4 font-mono text-xs uppercase tracking-label text-seal-bright">
             Arc Testnet · Decentralized Escrow
           </p>
-          <h1 className="font-display text-4xl leading-[1.15] text-paper sm:text-5xl">
+          <h1 className="font-display text-3xl leading-[1.15] text-paper sm:text-4xl md:text-5xl">
             Two wallet addresses.
             <br />
             One sealed deal.
@@ -37,7 +37,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="rounded-sm border border-ink-line bg-ink-soft p-6 paper-texture">
+        <div className="rounded-sm border border-ink-line bg-ink-soft p-5 paper-texture sm:p-6">
           <p className="mb-5 font-mono text-[11px] uppercase tracking-label text-slate">
             Example flow — Preview
           </p>
@@ -94,7 +94,7 @@ export default function HomePage() {
       </section>
 
       {/* Guarantees */}
-      <section className="rounded-sm border border-ink-line bg-ink-soft p-8">
+      <section className="rounded-sm border border-ink-line bg-ink-soft p-5 sm:p-8">
         <h2 className="font-display text-2xl text-paper">
           Funds are never stuck
         </h2>

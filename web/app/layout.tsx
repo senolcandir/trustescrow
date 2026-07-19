@@ -7,22 +7,22 @@ import { ConnectButton } from "@/components/ConnectButton";
 import { Logo } from "@/components/Logo";
 
 export const metadata: Metadata = {
-  title: "TrustEscrow - Secure USDC Payments, Built on Arc",
+  title: "TrustEscrow — Secure USDC Payments, Built on Arc",
   description:
-    "A platform built on Arc that doesn't bring buyers and sellers together - it only secures the payment between them.",
+    "A platform built on Arc that doesn't bring buyers and sellers together — it only secures the payment between them.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${displayFont.variable} ${sansFont.variable} ${monoFont.variable}`}>
-      <body className="min-h-screen font-sans antialiased">
+      <body className="min-h-screen overflow-x-hidden font-sans antialiased">
         <Providers>
           <header className="border-b border-ink-line/80">
-            <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-              <Link href="/" className="flex items-center gap-2.5">
-                <Logo className="h-7 w-7 text-seal-bright" />
-                <span className="flex items-baseline gap-2">
-                  <span className="font-display text-xl tracking-wideish text-paper">
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-4 sm:px-6 sm:py-5">
+              <Link href="/" className="flex items-center gap-2">
+                <Logo className="h-6 w-6 shrink-0 text-seal-bright sm:h-7 sm:w-7" />
+                <span className="flex flex-wrap items-baseline gap-x-2">
+                  <span className="font-display text-lg tracking-wideish text-paper sm:text-xl">
                     TrustEscrow
                   </span>
                   <span className="hidden font-mono text-[10px] uppercase tracking-label text-slate sm:inline">
@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </span>
                 </span>
               </Link>
-              <nav className="flex items-center gap-6 font-sans text-sm text-paper/80">
+              <nav className="flex flex-wrap items-center gap-3 font-sans text-xs text-paper/80 sm:gap-6 sm:text-sm">
                 <Link href="/create" className="transition hover:text-seal-bright">
                   Create Escrow
                 </Link>
@@ -41,8 +41,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </nav>
             </div>
           </header>
-          <main className="mx-auto max-w-5xl px-6 py-12">{children}</main>
-          <footer className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-6 py-10 font-mono text-xs text-slate/70">
+          <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">{children}</main>
+          <footer className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-8 font-mono text-xs text-slate/70 sm:px-6 sm:py-10">
             <span>
               TrustEscrow doesn&apos;t sell products or host listings. It only
               secures payment. Built on Arc.

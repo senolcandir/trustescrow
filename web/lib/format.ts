@@ -24,6 +24,21 @@ export function isZeroAddress(address?: string): boolean {
   return !address || /^0x0+$/.test(address);
 }
 
+// Guards against rendering a broken/relative link as a clickable <a> tag.
+// If evidence was saved without "https://" (e.g. "drive.google.com/..."),
+// browsers treat it as a path on our own site, which 404s and can trigger a
+// client-side navigation exception in Next.js. We only render a real link
+// when it parses as an absolute http(s) URL; otherwise we show it as plain
+// text instead of crashing.
+export function isSafeHttpUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 const DAY = 24n * 60n * 60n;
 
 export function secondsUntil(target: bigint, now: bigint): bigint {

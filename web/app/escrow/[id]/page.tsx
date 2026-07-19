@@ -15,7 +15,7 @@ import { ARC_ESCROW_ABI } from "@/lib/abi";
 import { ERC20_ABI } from "@/lib/erc20Abi";
 import { ARC_ESCROW_ADDRESS } from "@/lib/contract";
 import { arcTestnet, ARC_USDC_ADDRESS, ARC_USDC_DECIMALS, ARC_EXPLORER_URL } from "@/lib/chains";
-import { stateLabel, formatDuration, secondsUntil, isZeroAddress } from "@/lib/format";
+import { stateLabel, formatDuration, secondsUntil, isZeroAddress, isSafeHttpUrl } from "@/lib/format";
 import { SealTimeline } from "@/components/SealTimeline";
 import { AddressChip } from "@/components/AddressChip";
 import { ConnectButton } from "@/components/ConnectButton";
@@ -126,11 +126,22 @@ export default function EscrowDetailPage() {
         )}
 
         {escrow.evidenceURI && (
-          <div className="mt-3 font-mono text-sm text-paper/80">
+          <div className="mt-3 font-mono text-sm text-paper/80 break-all">
             Dispute evidence:{" "}
-            <a href={escrow.evidenceURI} target="_blank" rel="noreferrer" className="underline decoration-slate hover:text-seal-bright">
-              {escrow.evidenceURI}
-            </a>
+            {isSafeHttpUrl(escrow.evidenceURI) ? (
+              <a
+                href={escrow.evidenceURI}
+                target="_blank"
+                rel="noreferrer"
+                className="underline decoration-slate hover:text-seal-bright"
+              >
+                {escrow.evidenceURI}
+              </a>
+            ) : (
+              <span title="This isn't a valid link, showing as plain text">
+                {escrow.evidenceURI}
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -571,9 +582,47 @@ function AutoReleaseHint({
 
 function OpenDisputeForm({ escrowId, onChanged }: { escrowId: bigint; onChanged: () => void }) {
   const [evidence, setEvidence] = useState("");
-  const { writeContract, data: hash, isPending } = useWriteContract();
+  const [linkWarning, setLinkWarning] = useState<string | null>(null);
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
   if (isSuccess) onChanged();
+
+  function handleSubmit() {
+    setLinkWarning(null);
+    const trimmed = evidence.trim();
+
+    if (trimmed.length === 0) {
+      writeContract({
+        address: ARC_ESCROW_ADDRESS,
+        abi: ARC_ESCROW_ABI,
+        functionName: "openDispute",
+        args: [escrowId, ""],
+      });
+      return;
+    }
+
+    // If the person forgot the protocol (e.g. "drive.google.com/..."), add it
+    // automatically so the stored link is actually clickable later, instead
+    // of silently saving a broken relative link.
+    let normalized = trimmed;
+    if (!/^https?:\/\//i.test(normalized)) {
+      normalized = `https://${normalized}`;
+    }
+
+    if (!isSafeHttpUrl(normalized)) {
+      setLinkWarning(
+        "That doesn't look like a valid link. Double-check it, or leave the field empty."
+      );
+      return;
+    }
+
+    writeContract({
+      address: ARC_ESCROW_ADDRESS,
+      abi: ARC_ESCROW_ABI,
+      functionName: "openDispute",
+      args: [escrowId, normalized],
+    });
+  }
 
   return (
     <div className="rounded-sm border border-ember/30 bg-ember/5 p-5">
@@ -585,23 +634,29 @@ function OpenDisputeForm({ escrowId, onChanged }: { escrowId: bigint; onChanged:
       <div className="mt-3 space-y-3">
         <input
           value={evidence}
-          onChange={(e) => setEvidence(e.target.value)}
+          onChange={(e) => {
+            setEvidence(e.target.value);
+            setLinkWarning(null);
+          }}
           placeholder="Evidence link (optional)"
           className="w-full rounded-sm border border-ink-line bg-ink px-4 py-3 font-mono text-sm text-paper placeholder:text-slate/50 focus:border-ember/60"
         />
+        {linkWarning && (
+          <p className="rounded-sm bg-ember/10 px-3 py-2 font-sans text-sm text-ember-bright">
+            {linkWarning}
+          </p>
+        )}
+        {error && (
+          <p className="rounded-sm bg-ember/10 px-3 py-2 font-sans text-sm text-ember-bright">
+            The transaction failed or was rejected.
+          </p>
+        )}
         <TxButton
           label="Open Dispute"
           tone="ember"
           isPending={isPending}
           isConfirming={isConfirming}
-          onClick={() =>
-            writeContract({
-              address: ARC_ESCROW_ADDRESS,
-              abi: ARC_ESCROW_ABI,
-              functionName: "openDispute",
-              args: [escrowId, evidence.trim()],
-            })
-          }
+          onClick={handleSubmit}
         />
       </div>
     </div>
